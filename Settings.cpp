@@ -771,7 +771,7 @@ std::vector<double> SoapySDRPlay::listSampleRates(const int direction, const siz
     return output_sample_rates;
 }
 
-double SoapySDRPlay::getInputSampleRateAndDecimation(uint32_t output_sample_rate, unsigned int *decM, unsigned int *decEnable, sdrplay_api_If_kHzT *ifType) const
+double SoapySDRPlay::getInputSampleRateAndDecimation(double output_sample_rate, unsigned int *decM, unsigned int *decEnable, sdrplay_api_If_kHzT *ifType) const
 {
     sdrplay_api_If_kHzT lif = sdrplay_api_IF_1_620;
     double lif_input_sample_rate = 6000000;
@@ -782,7 +782,7 @@ double SoapySDRPlay::getInputSampleRateAndDecimation(uint32_t output_sample_rate
     }
 
     // all RSPs should support these sample rates
-    switch (output_sample_rate) {
+    switch ((int) output_sample_rate) {
         case 62500:
             *ifType = lif; *decM = 32; *decEnable = 1;
             return lif_input_sample_rate;
@@ -810,7 +810,7 @@ double SoapySDRPlay::getInputSampleRateAndDecimation(uint32_t output_sample_rate
   
     if (output_sample_rate <= 2000000)
     {
-        switch (output_sample_rate) {
+        switch ((int) output_sample_rate) {
             case 96000:
                 *ifType = sdrplay_api_IF_Zero; *decM = 32; *decEnable = 1;
                 return output_sample_rate * *decM;
@@ -823,9 +823,15 @@ double SoapySDRPlay::getInputSampleRateAndDecimation(uint32_t output_sample_rate
             case 768000:
                 *ifType = sdrplay_api_IF_Zero; *decM =  4; *decEnable = 1;
                 return output_sample_rate * *decM;
-            default:
-                return -1;
         }
+
+        // NRSC5 sample rate
+        if (output_sample_rate == 744187.5) {
+            *ifType = sdrplay_api_IF_Zero; *decM = 4; *decEnable = 1;
+            return output_sample_rate * *decM;
+        }
+
+        return -1;
     }
 
     // rate should be > 2 MHz so just return output_sample_rate
