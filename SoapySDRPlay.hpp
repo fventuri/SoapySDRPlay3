@@ -240,7 +240,7 @@ private:
      * Internal functions
      ******************************************************************/
 
-    double getInputSampleRateAndDecimation(uint32_t output_sample_rate, unsigned int *decM, unsigned int *decEnable, sdrplay_api_If_kHzT *ifType) const;
+    double getInputSampleRateAndDecimation(double output_sample_rate, unsigned int *decM, unsigned int *decEnable, sdrplay_api_If_kHzT *ifType) const;
 
     static sdrplay_api_Bw_MHzT getBwEnumForRate(double output_sample_rate);
 
